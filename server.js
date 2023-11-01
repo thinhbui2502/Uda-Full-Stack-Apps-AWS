@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles} from './util/util.js';
+import {filterImageFromURL, deleteLocalFiles, isValidURL} from './util/util.js';
 
 
 // Init the Express application
@@ -42,6 +42,10 @@ app.get("/filteredimage", async (req, res) => {
 
       if (!imageUrl) {
         return res.status(400).json({ error: 'image_url query parameter is required!' });
+      }
+
+      if(!isValidURL(imageUrl)) {
+        return res.status(400).json({ error: 'image_url is not valid!' });
       }
 
       const resImg = await filterImageFromURL(imageUrl);

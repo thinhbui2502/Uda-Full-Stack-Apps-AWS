@@ -11,8 +11,7 @@ import Jimp from "jimp";
 //    an absolute path to a filtered image locally saved file
  export async function filterImageFromURL(inputURL) {
   return new Promise(async (resolve, reject) => {
-    try {
-      const photo = await Jimp.read(inputURL);
+    const photo = await Jimp.read(inputURL);
       const outpath =
         "/tmp/filtered." + Math.floor(Math.random() * 2000) + ".jpg";
       await photo
@@ -22,9 +21,6 @@ import Jimp from "jimp";
         .write(outpath, (img) => {
           resolve(outpath);
         });
-    } catch (error) {
-      reject(error);
-    }
   });
 }
 
@@ -37,4 +33,10 @@ import Jimp from "jimp";
   for (let file of files) {
     fs.unlinkSync(file);
   }
+}
+
+
+export function isValidURL(inputURL) {
+  var pattern = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+= &%@! \-\/]))?/;
+  return pattern.test(inputURL);
 }
