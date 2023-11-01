@@ -1,5 +1,6 @@
 import fs from "fs";
 import Jimp from "jimp";
+import axios from 'axios';
 
 
 // filterImageFromURL
@@ -11,7 +12,11 @@ import Jimp from "jimp";
 //    an absolute path to a filtered image locally saved file
  export async function filterImageFromURL(inputURL) {
   return new Promise(async (resolve, reject) => {
-    const photo = await Jimp.read(inputURL);
+    try {
+      const photo = await axios({ method: 'get', url: inputURL, responseType: 'arraybuffer' })
+      .then(function ({data: imageBuffer}) {
+       return Jimp.read(imageBuffer)
+      })
       const outpath =
         "/tmp/filtered." + Math.floor(Math.random() * 2000) + ".jpg";
       await photo
@@ -21,6 +26,9 @@ import Jimp from "jimp";
         .write(outpath, (img) => {
           resolve(outpath);
         });
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
@@ -38,5 +46,5 @@ import Jimp from "jimp";
 
 export function isValidURL(inputURL) {
   var pattern = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+= &%@! \-\/]))?/;
-  return pattern.test(inputURL);
+    return pattern.test(inputURL);
 }
